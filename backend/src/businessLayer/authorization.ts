@@ -1,5 +1,5 @@
-import { JwtPayload } from '../auth/JwtPayload'
-import { verifyToken } from '../dataLayer/tokenValidation'
+import { JwtPayload } from "../auth/JwtPayload";
+import { verifyToken } from "../dataLayer/tokenValidation";
 
 /**
  * Authorizes a user based on the provided token.
@@ -9,5 +9,5 @@ import { verifyToken } from '../dataLayer/tokenValidation'
  * @throws {Error} - Throws an error if the token is invalid or authorization fails.
  */
 export async function authorizeUser(token: string): Promise<JwtPayload> {
-  return (await verifyToken(token)) as JwtPayload
+  return await verifyToken(token);
 }

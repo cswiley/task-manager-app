@@ -8,7 +8,8 @@
     "target": "es2017",
     "outDir": "lib",
     "esModuleInterop": true,
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "strictNullChecks": true
     // Other options...
   },
   "include": ["src", "test"],

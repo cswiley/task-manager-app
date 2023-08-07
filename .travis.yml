@@ -1,0 +1,19 @@
+services:
+  - docker
+
+# Pre-testing installs
+install:
+  - echo "nothing needs to be installed"
+
+# Scripts to be run such as tests
+before_script:
+  - export VERSION=$(node -p "require('./package.json').version")
+
+script:
+  - docker --version # print the version for logging
+  - docker build -t task-manager-app:${VERSION} .
+  - docker tag task-manager-app:${VERSION} camwiley/task-manager-app:${VERSION}
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push camwiley/task-manager-app:${VERSION}

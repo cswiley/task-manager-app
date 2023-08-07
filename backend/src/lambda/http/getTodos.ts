@@ -1,12 +1,16 @@
 import "source-map-support/register";
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import middy from "middy";
-import { cors, httpErrorHandler } from "middy/middlewares";
+// import middy from "middy";
+// import { cors, httpErrorHandler } from "middy/middlewares";
 import { extractUserIdFromAuthHeader } from "../../auth/utils";
 import { getAllTodos } from "../../businessLayer/todos";
 import { createLogger } from "../../utils/logger";
 import * as createError from "http-errors";
+import { GetTodosResponse } from "../../response/GetTodosResponse";
+import middy from "@middy/core";
+import httpErrorHandler from "@middy/http-error-handler";
+import cors from "@middy/http-cors";
 
 const logger = createLogger("getTodos");
 
@@ -19,15 +23,24 @@ const logger = createLogger("getTodos");
  */
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // Auth header parsing
-    logger.info("GetTodos");
     try {
-      const lastKey = event.queryStringParameters?.lastKey ?? null;
-      const limit = (event.queryStringParameters?.limit ?? -1) as number;
+      const limit: number = parseInt(
+        event.queryStringParameters?.limit ?? "",
+        10
+      );
 
       const userId = extractUserIdFromAuthHeader(event.headers.Authorization);
+      if (!userId) {
+        throw new createError.Unauthorized("Auth header is invalid");
+      }
 
-      const result = await getAllTodos(userId, lastKey, limit);
+      const lastKey = event.queryStringParameters?.lastKey;
+
+      const result: GetTodosResponse = await getAllTodos(
+        userId,
+        lastKey,
+        limit
+      );
 
       return {
         statusCode: 200,
@@ -38,7 +51,7 @@ export const handler = middy(
           itemsLimit: result.itemsLimit,
         }),
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error("Error in handler", { error });
       throw new createError.InternalServerError();
     }

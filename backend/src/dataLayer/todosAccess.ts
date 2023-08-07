@@ -1,64 +1,58 @@
 import * as AWS from "aws-sdk";
 import * as AWSXRay from "aws-xray-sdk";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { DocumentClient, Key } from "aws-sdk/clients/dynamodb";
 import { TodoItem } from "../models/TodoItem";
 import { TodoUpdate } from "../models/TodoUpdate";
-const { Buffer } = require("buffer");
+import { GetTodosResponse } from "../response/GetTodosResponse";
+import { decodeLastEvaluatedKey, encodeLastEvaluatedKey } from "./utils";
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
 const XAWS = AWSXRay.captureAWS(AWS);
 
-const QUERY_LIMIT = 20;
-
 export class TodoAccess {
-  private readonly docClient: DocumentClient;
+  private readonly docClient: AWS.DynamoDB.DocumentClient;
   private readonly todosTable: string;
   private readonly todosCreateAtIndex: string;
 
   constructor() {
     this.docClient = createDynamoDBClient();
-    this.todosTable = process.env.TODOS_TABLE;
-    this.todosCreateAtIndex = process.env.TODOS_CREATED_AT_INDEX;
+    this.todosTable = process.env?.TODOS_TABLE ?? "";
+    this.todosCreateAtIndex = process.env?.TODOS_CREATED_AT_INDEX ?? "";
   }
 
   async getAllTodos(
     userId: string,
-    lastKey: string,
-    limit: number
-  ): Promise<any> {
-    let lastEvaluatedKey = null;
-    if (lastKey) {
-      lastEvaluatedKey = JSON.parse(
-        Buffer.from(lastKey, "base64").toString("utf-8")
-      );
-    }
-    limit = limit && limit < QUERY_LIMIT && limit > 0 ? limit : QUERY_LIMIT;
-    const params = {
+    lastKey: string | undefined,
+    limit?: number
+  ): Promise<GetTodosResponse> {
+    const decodedKey: Key | undefined = decodeLastEvaluatedKey(lastKey);
+
+    const params: AWS.DynamoDB.DocumentClient.QueryInput = {
       TableName: this.todosTable,
       IndexName: this.todosCreateAtIndex,
       KeyConditionExpression: "userId = :userId",
       ExpressionAttributeValues: {
         ":userId": userId,
       },
-      ProjectionExpression:
-        "todoId, createdAt, #name, dueDate, done, attachmentUrl",
-      ExpressionAttributeNames: {
-        "#name": "name",
-      },
       Limit: limit, // Set the desired number of items per page
-      ExclusiveStartKey: lastEvaluatedKey,
+      ExclusiveStartKey: decodedKey,
       ScanIndexForward: false, // Retrieve items in descending order
     };
     const result = await this.docClient.query(params).promise();
-    const lastKeyResult = result.LastEvaluatedKey
-      ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64")
-      : null;
-    const totalItems = await this.getTodoCount(userId);
 
+    let items = result.Items;
+    if (result.Items && result.Items.length) {
+      items = result.Items.map((item) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { userId, ...otherFields } = item;
+        return otherFields;
+      });
+    }
+
+    const encodedKey = encodeLastEvaluatedKey(result.LastEvaluatedKey);
     return {
-      items: result.Items as TodoItem[],
-      lastKey: lastKeyResult,
-      itemsLimit: limit,
-      totalItems: totalItems,
+      items: items as TodoItem[],
+      lastKey: encodedKey,
     };
   }
 
@@ -150,6 +144,7 @@ export class TodoAccess {
   }
 }
 
-function createDynamoDBClient() {
+function createDynamoDBClient(): DocumentClient {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   return new XAWS.DynamoDB.DocumentClient();
 }

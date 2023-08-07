@@ -1,8 +1,9 @@
-import { decode } from 'jsonwebtoken'
+import { decode } from "jsonwebtoken";
 
-import { JwtPayload } from './JwtPayload'
+import { JwtPayload } from "./JwtPayload";
 
-const BEARER_PREFIX = 'bearer '
+import createHttpError from "http-errors";
+const BEARER_PREFIX = "bearer ";
 
 /**
  * Extracts the user ID from an authentication header.
@@ -12,8 +13,8 @@ const BEARER_PREFIX = 'bearer '
  * @throws {Error} If an error occurs during token extraction or user ID extraction.
  */
 export function extractUserIdFromAuthHeader(authHeader: string) {
-  const token = extractTokenFromAuthHeader(authHeader)
-  return extractUserIdFromToken(token)
+  const token = extractTokenFromAuthHeader(authHeader);
+  return extractUserIdFromToken(token);
 }
 
 /**
@@ -23,8 +24,8 @@ export function extractUserIdFromAuthHeader(authHeader: string) {
  * @returns The user ID extracted from the JWT token, or an empty string if not found.
  */
 export function extractUserIdFromToken(jwtToken: string): string {
-  const decodedJwt = decode(jwtToken) as JwtPayload
-  return decodedJwt?.sub ?? ''
+  const decodedJwt = decode(jwtToken) as JwtPayload;
+  return decodedJwt?.sub ?? "";
 }
 
 /**
@@ -36,12 +37,12 @@ export function extractUserIdFromToken(jwtToken: string): string {
  */
 export function extractTokenFromAuthHeader(authHeader: string): string {
   if (!authHeader) {
-    throw new Error('No authentication header')
+    throw new createHttpError.Unauthorized("Invalid authentication header");
   }
 
   if (!authHeader.toLowerCase().startsWith(BEARER_PREFIX)) {
-    throw new Error(`Invalid authentication header: ${authHeader}`)
+    throw new createHttpError.Unauthorized("Invalid authentication header");
   }
 
-  return authHeader.slice(BEARER_PREFIX.length)
+  return authHeader.slice(BEARER_PREFIX.length);
 }

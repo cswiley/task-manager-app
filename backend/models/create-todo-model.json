@@ -8,11 +8,11 @@
     },
     "dueDate": {
       "type": "string"
+    },
+    "priority": {
+      "type": "string"
     }
   },
-  "required": [
-    "name",
-    "dueDate"
-  ],
+  "required": ["name", "dueDate"],
   "additionalProperties": false
 }

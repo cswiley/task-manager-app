@@ -1,10 +1,16 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import "source-map-support/register";
-import middy from "middy";
-import { cors, httpErrorHandler } from "middy/middlewares";
 import { CreateTodoRequest } from "../../requests/CreateTodoRequest";
 import { createTodo } from "../../businessLayer/todos";
 import { extractUserIdFromAuthHeader } from "../../auth/utils";
+import createHttpError from "http-errors";
+import middy from "@middy/core";
+import httpErrorHandler from "@middy/http-error-handler";
+import cors from "@middy/http-cors";
+import { createLogger } from "../../utils/logger";
+const logger = createLogger("createTodo");
+
+import jsonBodyParser from "@middy/http-json-body-parser";
 
 /**
  * Handles the Lambda function for creating a new todo item.
@@ -15,13 +21,16 @@ import { extractUserIdFromAuthHeader } from "../../auth/utils";
  */
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // Request parsing
-    const newTodo: CreateTodoRequest = JSON.parse(event.body);
+    logger.info("creating todo");
+    if (event.body === null || typeof event.body === "string") {
+      throw new createHttpError.BadRequest("Invalid request body");
+    }
+    const createRequest = event.body as CreateTodoRequest;
 
     // Auth header parsing
     const userId = extractUserIdFromAuthHeader(event.headers.Authorization);
 
-    const newItem = await createTodo(newTodo, userId);
+    const newItem = await createTodo(createRequest, userId);
 
     return {
       statusCode: 201,
@@ -30,8 +39,11 @@ export const handler = middy(
   }
 );
 
-handler.use(httpErrorHandler()).use(
-  cors({
-    credentials: true,
-  })
-);
+handler
+  .use(jsonBodyParser())
+  .use(httpErrorHandler())
+  .use(
+    cors({
+      credentials: true,
+    })
+  );

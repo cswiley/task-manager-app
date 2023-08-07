@@ -12,13 +12,13 @@ const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId;
+    const todoId = event.pathParameters?.todoId ?? "";
     const userId = extractUserIdFromAuthHeader(event.headers.Authorization);
 
     // Return a presigned URL to upload a file for a TODO item with the provided id
     const presignedUrl = createAttachmentPresignedUrl(todoId);
     const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`;
-    updateTodoAttachmentUrl(todoId, userId, attachmentUrl);
+    await updateTodoAttachmentUrl(todoId, userId, attachmentUrl);
 
     return {
       statusCode: 200,

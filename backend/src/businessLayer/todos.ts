@@ -5,11 +5,13 @@ import { CreateTodoRequest } from "../requests/CreateTodoRequest";
 import { UpdateTodoRequest } from "../requests/UpdateTodoRequest";
 import { createLogger } from "../utils/logger";
 import * as uuid from "uuid";
-import * as createError from "http-errors";
+import { GetTodosResponse } from "../response/GetTodosResponse";
+import createHttpError from "http-errors";
 
 const todoAccess = new TodoAccess();
 const attachmentUtils = new AttachmentUtils();
 const logger = createLogger("todos");
+const QUERY_LIMIT = 20;
 
 /**
  * Retrieves all todo items for a specific user.
@@ -20,14 +22,51 @@ const logger = createLogger("todos");
  */
 export async function getAllTodos(
   userId: string,
-  lastKey: string,
-  limit: number
-): Promise<any> {
+  lastKey?: string,
+  limit?: number
+): Promise<GetTodosResponse> {
+  // Limit set to max value when value is not within valid range
+  if (
+    limit === undefined ||
+    isNaN(limit) ||
+    limit <= 0 ||
+    limit > QUERY_LIMIT
+  ) {
+    limit = QUERY_LIMIT;
+  }
+
+  if (limit <= 0 || limit > QUERY_LIMIT) {
+    logger.error(`Invalid limit value: ${limit}`);
+    throw new createHttpError.InternalServerError("Invalid limit range");
+  }
+
+  // const totalItems = await getTodosCount(userId);
+
   try {
-    return await todoAccess.getAllTodos(userId, lastKey, limit);
-  } catch (error) {
+    const todosResponse: GetTodosResponse = await todoAccess.getAllTodos(
+      userId,
+      lastKey,
+      limit
+    );
+
+    const count = await getTodosCount(userId);
+
+    todosResponse.itemsLimit = limit;
+    todosResponse.totalItems = count;
+
+    return todosResponse;
+  } catch (error: unknown) {
     logger.error("Error in getAllTodos", { error });
-    throw new createError.InternalServerError(error);
+    throw error;
+  }
+}
+
+export async function getTodosCount(userId: string) {
+  try {
+    return await todoAccess.getTodoCount(userId);
+  } catch (error: unknown) {
+    logger.error("Error in getTodosCount", { error });
+    throw error;
   }
 }
 
@@ -43,9 +82,7 @@ export async function createTodo(
   createTodoRequest: CreateTodoRequest,
   userId: string
 ): Promise<TodoItem> {
-  logger.info("Creating new todo");
-
-  const itemId = uuid.v4();
+  const itemId: string = uuid.v4();
 
   const todoParams = {
     todoId: itemId,
@@ -53,15 +90,16 @@ export async function createTodo(
     name: createTodoRequest.name,
     createdAt: new Date().toISOString(),
     dueDate: createTodoRequest.dueDate,
+    priority: createTodoRequest.priority,
     done: false,
     attachmentUrl: "",
   };
 
   try {
     return await todoAccess.createTodo(todoParams);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in createTodo", { error });
-    throw new createError.InternalServerError(error);
+    throw error;
   }
 }
 
@@ -78,12 +116,11 @@ export async function updateTodo(
   userId: string,
   updateTodoRequest: UpdateTodoRequest
 ) {
-  logger.info("Updating todo:", { todoId });
   try {
     await todoAccess.updateTodo(todoId, userId, updateTodoRequest);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in updateTodo", { error });
-    throw new createError.InternalServerError(error);
+    throw error;
   }
 }
 
@@ -94,9 +131,9 @@ export async function updateTodoAttachmentUrl(
 ) {
   try {
     await todoAccess.updateTodoAttachmentUrl(todoId, userId, attachmentUrl);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in updateTodoAttachmentUrl", { error });
-    throw new createError.InternalServerError(error);
+    throw error;
   }
 }
 
@@ -112,24 +149,19 @@ export async function deleteTodo(
   todoId: string,
   userId: string
 ): Promise<string> {
-  logger.info("Deleting todo:", { todoId });
   try {
     return await todoAccess.deleteTodo(todoId, userId);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in deleteTodo", { error });
-    if (error.code === "ConditionalCheckFailedException") {
-      throw new createError.NotFound("Item not found");
-    }
-    logger.error("Failed to delete todo:", { todoId });
-    throw new createError.InternalServerError(error);
+    throw error;
   }
 }
 
 export function createAttachmentPresignedUrl(id: string): string {
   try {
     return attachmentUtils.getUploadUrl(id);
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error("Error in createAttachmentPresignedUrl", { error });
-    throw new createError.InternalServerError(error);
+    throw error;
   }
 }

@@ -1,0 +1,24 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "project": true,
+    "tsconfigRootDir": "__dirname"
+  },
+  "env": {
+    "node": true,
+    "es2017": true,
+    "jest": true
+  },
+  "rules": {
+    "@typescript-eslint/strict-boolean-expressions": "error"
+  }
+}

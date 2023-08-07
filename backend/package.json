@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Serverless TODO image app",
   "scripts": {
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@middy/core": "^4.5.2",
@@ -26,8 +27,16 @@
     "@types/jest": "^29.5.2",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/node": "^10.14.4",
+    "@types/uuid": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
     "aws-sdk": "^2.437.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-iam-roles-per-function": "^3.2.0-e97ab49",
     "serverless-plugin-canary-deployments": "^0.4.7",
@@ -35,6 +44,7 @@
     "serverless-reqvalidator-plugin": "^1.0.3",
     "serverless-webpack": "^5.2.0",
     "sinon": "^15.2.0",
+    "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "typescript": ">=3.8.0",
