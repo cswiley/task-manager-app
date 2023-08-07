@@ -1,0 +1,45 @@
+{
+  "name": "serverless-todo-app",
+  "version": "1.0.0",
+  "description": "Serverless TODO image app",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "dependencies": {
+    "@middy/core": "^4.5.2",
+    "@middy/http-cors": "^4.5.2",
+    "@middy/http-error-handler": "^4.5.2",
+    "@types/axios": "^0.14.0",
+    "@types/http-errors": "^1.6.1",
+    "aws-xray-sdk": "^2.3.1",
+    "axios": "^0.18.0",
+    "http-errors": "^1.7.2",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^3.0.1",
+    "middy": "^0.27.0",
+    "source-map-support": "^0.5.11",
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.24",
+    "@types/jest": "^29.5.2",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/node": "^10.14.4",
+    "aws-sdk": "^2.437.0",
+    "jest": "^29.5.0",
+    "serverless-aws-documentation": "^1.1.0",
+    "serverless-iam-roles-per-function": "^3.2.0-e97ab49",
+    "serverless-plugin-canary-deployments": "^0.4.7",
+    "serverless-plugin-tracing": "^2.0.0",
+    "serverless-reqvalidator-plugin": "^1.0.3",
+    "serverless-webpack": "^5.2.0",
+    "sinon": "^15.2.0",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "typescript": ">=3.8.0",
+    "webpack": "^5.87.0"
+  },
+  "author": "Ivan Mushketyk",
+  "license": "MIT"
+}
