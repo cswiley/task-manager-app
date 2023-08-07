@@ -7,11 +7,11 @@ install:
 
 # Scripts to be run such as tests
 before_script:
-  - export VERSION=$(node -p "require('./package.json').version")
+  - export VERSION=$(node -p "require('./client/package.json').version")
 
 script:
   - docker --version # print the version for logging
-  - docker build -t task-manager-app:${VERSION} .
+  - docker build -t task-manager-app:${VERSION} ./client
   - docker tag task-manager-app:${VERSION} camwiley/task-manager-app:${VERSION}
 
 after_success:
