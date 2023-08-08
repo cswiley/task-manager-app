@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: task-manager-app
-          image: camwiley/task-manager-app:0.1.0
+          image: camwiley/task-manager-app:0.1.1
           imagePullPolicy: Always
           resources:
             requests:
