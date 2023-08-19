@@ -34,7 +34,6 @@ export default class Auth {
 
   handleAuthentication() {
     this.auth0.parseHash((err, authResult) => {
-      console.log('authResult:', authResult)
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult)
       } else if (err) {
@@ -71,7 +70,6 @@ export default class Auth {
     localStorage.setItem('expiresAt', this.expiresAt)
 
     // navigate to the home route
-    console.log('navigate to homepage')
     this.history.push('/')
   }
 
@@ -88,28 +86,22 @@ export default class Auth {
   }
 
   async renewSession() {
-    console.log('renew session')
     const expiresAt = Math.floor(this.getTokenExpirationTime() * 1000)
     const now = Math.floor(Date.now() * 1000)
     if (!expiresAt) {
-      console.log('not logged in')
       return false
     }
     const remainingTime = expiresAt - now
-    console.log('remaining time:', remainingTime)
     if (remainingTime < tokenExpirationThresholdInSeconds) {
       try {
         const authResult = await this.checkSession()
-        console.log(authResult)
         if (authResult && authResult.accessToken && authResult.idToken) {
-          console.log('session renewed!')
           this.setSession(authResult)
           return true
         }
         this.logout()
         return false
       } catch (err) {
-        console.log(err)
         this.logout()
         // alert(
         //   `Could not get a new token (${err.error}: ${err.error_description}).`
@@ -117,7 +109,6 @@ export default class Auth {
         return false
       }
     }
-    console.log('renew session skipped: authentication valid')
     return true
   }
 

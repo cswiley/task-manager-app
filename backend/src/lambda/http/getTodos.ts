@@ -35,21 +35,20 @@ export const handler = middy(
       }
 
       const lastKey = event.queryStringParameters?.lastKey;
+      const done = event.queryStringParameters?.done;
+      const priority = event.queryStringParameters?.priority;
 
       const result: GetTodosResponse = await getAllTodos(
         userId,
         lastKey,
+        done,
+        priority,
         limit
       );
 
       return {
         statusCode: 200,
-        body: JSON.stringify({
-          items: result.items,
-          lastKey: result.lastKey,
-          totalItems: result.totalItems,
-          itemsLimit: result.itemsLimit,
-        }),
+        body: JSON.stringify(result),
       };
     } catch (error: unknown) {
       logger.error("Error in handler", { error });

@@ -45,7 +45,6 @@ export default class App extends Component<AppProps, AppState> {
   }
 
   async componentDidMount() {
-    console.log('did mount')
     const isAuthenticated = await this.props.auth.isAuthenticated()
     this.setState({ isAuthenticated: isAuthenticated })
   }
@@ -78,19 +77,8 @@ export default class App extends Component<AppProps, AppState> {
         </Menu.Item>
 
         <Menu.Menu position='right'>{this.logInLogOutButton()}</Menu.Menu>
-        <Menu.Menu position='right'>{this.refreshButton()}</Menu.Menu>
       </Menu>
     )
-  }
-
-  refreshButton() {
-    if (this.state.isAuthenticated) {
-      return (
-        <Menu.Item name='refresh' onClick={this.handleRefresh}>
-          Refresh
-        </Menu.Item>
-      )
-    }
   }
 
   logInLogOutButton() {

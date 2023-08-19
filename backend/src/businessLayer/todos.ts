@@ -12,6 +12,7 @@ const todoAccess = new TodoAccess();
 const attachmentUtils = new AttachmentUtils();
 const logger = createLogger("todos");
 const QUERY_LIMIT = 20;
+const DEFAULT_PRIORITY = "low";
 
 /**
  * Retrieves all todo items for a specific user.
@@ -23,6 +24,8 @@ const QUERY_LIMIT = 20;
 export async function getAllTodos(
   userId: string,
   lastKey?: string,
+  done?: string,
+  priority?: string,
   limit?: number
 ): Promise<GetTodosResponse> {
   // Limit set to max value when value is not within valid range
@@ -41,18 +44,48 @@ export async function getAllTodos(
   }
 
   // const totalItems = await getTodosCount(userId);
+  let doneValue: boolean | undefined;
+  if (done === "true") {
+    doneValue = true;
+  } else if (done === "false") {
+    doneValue = false;
+  }
 
   try {
     const todosResponse: GetTodosResponse = await todoAccess.getAllTodos(
       userId,
       lastKey,
+      doneValue,
+      priority,
       limit
     );
 
-    const count = await getTodosCount(userId);
+    const count = await getTodosCount(userId, doneValue, priority);
 
     todosResponse.itemsLimit = limit;
     todosResponse.totalItems = count;
+
+    while (
+      todosResponse.items.length < count &&
+      todosResponse.items.length < limit &&
+      todosResponse.lastKey !== undefined
+    ) {
+      // query by lastKey
+      const nextTodosResponse = await todoAccess.getAllTodos(
+        userId,
+        todosResponse.lastKey,
+        doneValue,
+        priority,
+        limit
+      );
+      // append next response to results
+      todosResponse.items = [
+        ...todosResponse.items,
+        ...nextTodosResponse.items,
+      ];
+      // update last key
+      todosResponse.lastKey = nextTodosResponse.lastKey;
+    }
 
     return todosResponse;
   } catch (error: unknown) {
@@ -61,9 +94,22 @@ export async function getAllTodos(
   }
 }
 
-export async function getTodosCount(userId: string) {
+export async function getTodo(userId: string, todoId: string) {
   try {
-    return await todoAccess.getTodoCount(userId);
+    return await todoAccess.getTodo(userId, todoId);
+  } catch (error: unknown) {
+    logger.error("Error in getTodo", { error });
+    throw error;
+  }
+}
+
+export async function getTodosCount(
+  userId: string,
+  done?: boolean,
+  priority?: string
+) {
+  try {
+    return await todoAccess.getTodoCount(userId, done, priority);
   } catch (error: unknown) {
     logger.error("Error in getTodosCount", { error });
     throw error;
@@ -90,7 +136,7 @@ export async function createTodo(
     name: createTodoRequest.name,
     createdAt: new Date().toISOString(),
     dueDate: createTodoRequest.dueDate,
-    priority: createTodoRequest.priority,
+    priority: createTodoRequest.priority || DEFAULT_PRIORITY,
     done: false,
     attachmentUrl: "",
   };
@@ -117,6 +163,10 @@ export async function updateTodo(
   updateTodoRequest: UpdateTodoRequest
 ) {
   try {
+    const result = await todoAccess.getTodo(userId, todoId);
+    if (result === null) {
+      throw "Todo item not found";
+    }
     await todoAccess.updateTodo(todoId, userId, updateTodoRequest);
   } catch (error: unknown) {
     logger.error("Error in updateTodo", { error });

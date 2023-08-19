@@ -12,32 +12,55 @@ const XAWS = AWSXRay.captureAWS(AWS);
 export class TodoAccess {
   private readonly docClient: AWS.DynamoDB.DocumentClient;
   private readonly todosTable: string;
-  private readonly todosCreateAtIndex: string;
+  private readonly todosDueDateIndex: string;
 
   constructor() {
     this.docClient = createDynamoDBClient();
     this.todosTable = process.env?.TODOS_TABLE ?? "";
-    this.todosCreateAtIndex = process.env?.TODOS_CREATED_AT_INDEX ?? "";
+    this.todosDueDateIndex = process.env?.TODOS_DUE_DATE_INDEX ?? "";
   }
 
   async getAllTodos(
     userId: string,
-    lastKey: string | undefined,
+    lastKey?: string,
+    done?: boolean,
+    priority?: string,
     limit?: number
   ): Promise<GetTodosResponse> {
     const decodedKey: Key | undefined = decodeLastEvaluatedKey(lastKey);
 
     const params: AWS.DynamoDB.DocumentClient.QueryInput = {
       TableName: this.todosTable,
-      IndexName: this.todosCreateAtIndex,
+      IndexName: this.todosDueDateIndex,
       KeyConditionExpression: "userId = :userId",
       ExpressionAttributeValues: {
         ":userId": userId,
       },
       Limit: limit, // Set the desired number of items per page
       ExclusiveStartKey: decodedKey,
-      ScanIndexForward: false, // Retrieve items in descending order
+      ScanIndexForward: true, // Retrieve items in descending order
     };
+    if (params.ExpressionAttributeValues === undefined) {
+      params.ExpressionAttributeValues = {};
+    }
+    if (done !== undefined) {
+      if (params.FilterExpression === undefined) {
+        params.FilterExpression = "";
+      } else {
+        params.FilterExpression += " AND ";
+      }
+      params.FilterExpression += "done = :done";
+      params.ExpressionAttributeValues[":done"] = done;
+    }
+    if (priority !== undefined) {
+      if (params.FilterExpression === undefined) {
+        params.FilterExpression = "";
+      } else {
+        params.FilterExpression += " AND ";
+      }
+      params.FilterExpression += "priority = :priority";
+      params.ExpressionAttributeValues[":priority"] = priority;
+    }
     const result = await this.docClient.query(params).promise();
 
     let items = result.Items;
@@ -56,7 +79,27 @@ export class TodoAccess {
     };
   }
 
-  async getTodoCount(userId: string): Promise<number> {
+  async getTodo(userId: string, todoId: string): Promise<TodoItem | null> {
+    const params: AWS.DynamoDB.DocumentClient.QueryInput = {
+      TableName: this.todosTable,
+      KeyConditionExpression: "userId = :userId AND todoId = :todoId",
+      ExpressionAttributeValues: {
+        ":userId": userId,
+        ":todoId": todoId,
+      },
+    };
+    const result = await this.docClient.query(params).promise();
+    if (result.Items && result.Items.length) {
+      return result.Items[0] as TodoItem;
+    }
+    return null;
+  }
+
+  async getTodoCount(
+    userId: string,
+    done?: boolean,
+    priority?: string
+  ): Promise<number> {
     const params = {
       TableName: this.todosTable,
       Select: "COUNT",
@@ -65,6 +108,15 @@ export class TodoAccess {
         ":userId": userId,
       },
     };
+
+    if (done !== undefined) {
+      params.FilterExpression += " AND done = :done";
+      params.ExpressionAttributeValues[":done"] = done;
+    }
+    if (priority !== undefined) {
+      params.FilterExpression += " AND priority = :priority";
+      params.ExpressionAttributeValues[":priority"] = priority;
+    }
 
     const response = await this.docClient.scan(params).promise();
     return response.Count ?? 0;

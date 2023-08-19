@@ -1,28 +1,24 @@
-# Project Proposal
+# Cloud Capstone Project
 
 ## Project Title
 
-Daily task manager
+Task manager
 
 ## Project Description
 
-Gamify your daily tasks by assigning a priority and effort level. You'll receive a daily score based on what you were able to achieve.
+Simple task manager application that allows users to enter tasks and assign each a name, image, priority, and due date.
 
 ## Project Features
 
-- User auth
-- Task creation with effort and priority levels
-- Point calculator for each task based on effort and priority
-- Task CRUD
-- Task image attachment
-- Task status
-- Task reuse - associate with a week
-- Metrics
-  - Current weekly score and average
-  - Best weekly average and daily score
-- Archive
-  - Daily tasks
-  - Weekly score archive
+- Users need to authenticate to use the application.
+- Users can only see their own tasks.
+- New tasks can have a name, due date, and priority of (low, medium, high).
+- After a task is created, an image can be added to the task using the pencil icon.
+- A task status can be marked as "done" using the toggle button.
+- Tasks can be filtered by priority or status.
+- Tasks can be deleted using the 'x' icon.
+- Tasks are sorted by most-recent-due-date by default.
+- Task list is paginated at 10 items-per-page by default.
 
 ## Technologies and Tools
 
@@ -35,40 +31,38 @@ Gamify your daily tasks by assigning a priority and effort level. You'll receive
 - S3 as file store
 - Auth0 as authentication provider
 - Lamdba as custom authorizer
-- Svelte as client application framework using TypeScript
-- Unit tests with mocha and chai
-- Integration tests postman
-
-## Target Audience
-
-- Jon keeps uses calendar on his phone to keep track of his tasks for the day, but setting times for each of his tasks is too rigid. In addition, adding each small task can be very tedious.
-
-- Jen uses google keep notes to create a list of tasks for the day. This is easy to do but she'd but she doesn't always complete her daily tasks, so she has to manually add those to the current day's list. Plus she wants to know how when she's doing at completing her tasks.
-
-## Project Scope
-
-[Define the boundaries and limitations of your project]
-
-## Deliverables
-
-- [Deliverable 1]
-- [Deliverable 2]
-- [Deliverable 3]
-- ...
+- Integration tests on Postman
 
 ## Success Criteria
 
-[Describe the criteria that will determine the success of your project]
+### Functionality
 
-## Timeline
+[x] The application allows users to create, update, delete items
 
-- Week 1 - Backend Implementation
-- Week ...
+[x] The application allows users to upload a file.
 
-## Risks and Challenges
+[x] The application only displays items for a logged in user.
 
-[Identify potential risks and challenges that you may encounter during the project]
+[x] Authentication is implemented and does not allow unauthenticated access.
 
-## Resources
+### Code Base
 
-[Specify any external resources or references you plan to use]
+[x] The code is split into multiple layers separating business logic from I/O related code.
+
+[x] Code is implemented using async/await and Promises without using callbacks.
+
+### Best Practice
+
+[x] All resources in the application are defined in the "serverless.yml" file
+
+[x] Each function has its own set of permissions.
+
+[x] Application has sufficient monitoring.
+
+[x] HTTP requests are validated
+
+### Architecture
+
+[x] Data is stored in a table with a composite key.
+
+[x] Scan operation is not used to read data from a database.

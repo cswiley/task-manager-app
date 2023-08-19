@@ -28,14 +28,29 @@ function handleAxiosError(error: any): void {
 export async function getTodos(
   idToken: string,
   key: string,
+  priority: string,
+  status: string,
   limit: number = 10
 ): Promise<any> {
   try {
+    const params: any = {}
+    if (key) {
+      params.lastKey = key
+    }
+    if (priority) {
+      params.priority = priority
+    }
+    if (limit) {
+      params.limit = limit
+    }
+    if (status === 'true') {
+      params.done = 'true'
+    }
+    if (status === 'false') {
+      params.done = 'false'
+    }
     const response = await Axios.get(`${apiEndpoint}/todos`, {
-      params: {
-        lastKey: key,
-        limit: limit
-      },
+      params: params,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${idToken}`
