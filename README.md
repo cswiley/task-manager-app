@@ -66,3 +66,18 @@ Simple task manager application that allows users to enter tasks and assign each
 [x] Data is stored in a table with a composite key.
 
 [x] Scan operation is not used to read data from a database.
+
+## Setup
+
+1. The API (back end) is already deployed using serverless and AWS infrastructure.
+
+2. Front end can be run locally, since we're just testing the serverless API implementation for this project.
+
+```
+cd client
+npm install
+npm start
+
+```
+
+3. The API can also be tested using Postman. The postman collection JSON has been include in the root directory (it includes an auth token for testing purposes).

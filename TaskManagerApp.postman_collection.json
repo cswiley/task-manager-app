@@ -1,0 +1,1211 @@
+{
+	"info": {
+		"_postman_id": "5b80f1b2-01d6-40ef-a8c5-984e11137952",
+		"name": "Task Manager App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26665630"
+	},
+	"item": [
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Create tasks - low priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"pm.test(\"Response has new item object\", () => {",
+									"    pm.expect(response).to.have.property('item')",
+									"    pm.expect(response.item).to.have.property('todoId')",
+									"})",
+									"",
+									"pm.variables.set('todoId', response.item.todoId)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const date = new Date()",
+									"date.setDate(date.getDate() + 7)",
+									"const formattedDate = date.toISOString().slice(0, 10);",
+									"",
+									"pm.variables.set('dueDate',formattedDate);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{$randomLoremSentence}}\",\n\t\"dueDate\": \"{{dueDate}}\"\n}"
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create tasks - medium priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"pm.test(\"Response has new item object\", () => {",
+									"    pm.expect(response).to.have.property('item')",
+									"    pm.expect(response.item).to.have.property('todoId')",
+									"})",
+									"",
+									"pm.variables.set('todoMediumId', response.item.todoId)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const date = new Date()",
+									"date.setDate(date.getDate() + 7)",
+									"const formattedDate = date.toISOString().slice(0, 10);",
+									"",
+									"pm.variables.set('dueDate',formattedDate);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{$randomLoremSentence}}\",\n\t\"dueDate\": \"{{dueDate}}\",\n    \"priority\": \"medium\"\n}"
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create tasks - high priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"pm.test(\"Response has new item object\", () => {",
+									"    pm.expect(response).to.have.property('item')",
+									"    pm.expect(response.item).to.have.property('todoId')",
+									"})",
+									"",
+									"pm.variables.set('todoHighId', response.item.todoId)"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const date = new Date()",
+									"date.setDate(date.getDate() + 7)",
+									"const formattedDate = date.toISOString().slice(0, 10);",
+									"",
+									"pm.variables.set('dueDate',formattedDate);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{$randomLoremSentence}}\",\n\t\"dueDate\": \"{{dueDate}}\",\n    \"priority\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"const lowPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'low'",
+									"})",
+									"const highPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'high'",
+									"})",
+									"",
+									"pm.test(\"Response has at least two items\", () => {",
+									"    pm.expect(response.items.length).to.be.gte(2)",
+									"})",
+									"",
+									"pm.test(\"Response has low priority items\", () => {",
+									"    pm.expect(lowPriorityItems.length).to.be.gt(0)",
+									"})",
+									"",
+									"pm.test(\"Response has high priority items\", () => {",
+									"    pm.expect(highPriorityItems.length).to.be.gt(0)",
+									"})",
+									"",
+									"pm.test(\"User id not included in results\", () => {",
+									"    pm.expect(response.items[0]).to.not.have.property('userId')",
+									"})",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "low",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all 'low priority' tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"const lowPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'low'",
+									"})",
+									"const highPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'high'",
+									"})",
+									"",
+									"pm.test(\"Response has low priority items\", () => {",
+									"    pm.expect(lowPriorityItems.length).to.be.gt(0)",
+									"})",
+									"",
+									"pm.test(\"Response has no high priority items\", () => {",
+									"    pm.expect(highPriorityItems.length).to.eql(0)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos?priority=low",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "low"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all 'medium priority' tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"const lowPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'low'",
+									"})",
+									"const highPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'high'",
+									"})",
+									"const mediumPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'medium'",
+									"})",
+									"",
+									"pm.test(\"Response has medium priority items\", () => {",
+									"    pm.expect(mediumPriorityItems.length).to.be.gt(0)",
+									"})",
+									"",
+									"pm.test(\"Response has no low priority items\", () => {",
+									"    pm.expect(lowPriorityItems.length).to.eql(0)",
+									"})",
+									"",
+									"pm.test(\"Response has no high priority items\", () => {",
+									"    pm.expect(highPriorityItems.length).to.eql(0)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos?priority=medium",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "medium"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all 'high priority' tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"const lowPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'low'",
+									"})",
+									"const highPriorityItems = response.items.filter((item) => {",
+									"    return item.priority === 'high'",
+									"})",
+									"",
+									"pm.test(\"Response has high priority items\", () => {",
+									"    pm.expect(highPriorityItems.length).to.be.gt(0)",
+									"})",
+									"",
+									"pm.test(\"Response has no low priority items\", () => {",
+									"    pm.expect(lowPriorityItems.length).to.eql(0)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos?priority=high",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "priority",
+									"value": "high"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Todo updated\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Change the world\",\n\t\"dueDate\": \"2019-12-11\",\n\t\"done\": true\n}"
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos/:todoId",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos",
+								":todoId"
+							],
+							"variable": [
+								{
+									"key": "todoId",
+									"value": "{{todoId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all 'not done' tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"const notDoneItems = response.items.filter((item) => {",
+									"    return item.done === false",
+									"})",
+									"const doneItems = response.items.filter((item) => {",
+									"    return item.done === true",
+									"})",
+									"",
+									"pm.test('Response has only not done items', () => {",
+									"    pm.expect(doneItems.length).to.eq(0)",
+									"    pm.expect(notDoneItems.length).to.be.gt(0)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos?done=false",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "done",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all 'done' tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"",
+									"const notDoneItems = response.items.filter((item) => {",
+									"    return item.done === false",
+									"})",
+									"const doneItems = response.items.filter((item) => {",
+									"    return item.done === true",
+									"})",
+									"",
+									"pm.test('Response has only done items', () => {",
+									"    pm.expect(doneItems.length).to.be.gt(0)",
+									"    pm.expect(notDoneItems.length).to.eq(0)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos?done=true",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos"
+							],
+							"query": [
+								{
+									"key": "done",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get attachment URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"const response = pm.response.json()",
+									"pm.test(\"Response has uploadUrl\", () => {",
+									"    pm.expect(response).has.property('uploadUrl')",
+									"})",
+									"",
+									"pm.variables.set('attachmentUrl', response.uploadUrl)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos/:todoId/attachment",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos",
+								":todoId",
+								"attachment"
+							],
+							"variable": [
+								{
+									"key": "todoId",
+									"value": "{{todoId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload attachment image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/cameronwiley/Downloads/pexels-andrew-neel-2248516.jpg"
+							}
+						},
+						"url": {
+							"raw": "{{attachmentUrl}}",
+							"host": [
+								"{{attachmentUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete task - low priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Todo deleted successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos/:todoId",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos",
+								":todoId"
+							],
+							"variable": [
+								{
+									"key": "todoId",
+									"value": "{{todoId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete task - medium priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Todo deleted successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos/:todoId",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos",
+								":todoId"
+							],
+							"variable": [
+								{
+									"key": "todoId",
+									"value": "{{todoMediumId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete task - high priority",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Todo deleted successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/todos/:todoId",
+							"protocol": "https",
+							"host": [
+								"{{apiId}}",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"dev",
+								"todos",
+								":todoId"
+							],
+							"variable": [
+								{
+									"key": "todoId",
+									"value": "{{todoHighId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiId",
+			"value": "hpcok1d0ff",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFyNFpCZ25CcnlwRmdOLW9nTVdIZyJ9.eyJpc3MiOiJodHRwczovL2Rldi00endvcWtoZHg2czNtYnpxLnVzLmF1dGgwLmNvbS8iLCJhdWQiOiIwUmI4bEdNdm5tYTVQU2Q2UkhadDZIODdNdFd5OUw1YyIsImlhdCI6MTY4ODc1Nzk5MiwiZXhwIjoxNjg5MTg5OTkyLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwNDgxOTExMTczMDcwNzE3NTI1MSIsImF0X2hhc2giOiJ1bm9MZHJWWGxTUkhBZmdaT3g4Ni1RIiwic2lkIjoiRjR0QVpoeHB0MXJ6aGdGYTRsRnN1amFuNXRIS2lkNngiLCJub25jZSI6Im1zMy5xQVYzSGNDZzJmMHphNWV2MHh3RkVRcmtrLk5DIn0.mfn7uXx47HxyU-iwkpa6Ux5OEuIZQ8fEqbSD-VsgUTu0rfJIPdh5vfAG-oFl3_ztA1cqdS_O4NHeDvjAF04vYQien_sR0cj0F6a310jusfZjI4xci_lFvfJVHKNo_FKKMzXZMYDReyhg9RWoUf6h03ZahJUUVz9adRlghnDr0R1zYV8g4qZ7pN5DJ04eW9b46lMHHiLg69D-IEYGQSSLd3SCTeVYb9nv-G32DuxgpPeNLcKV9LV-o1u0999LRklvBTPmiKWueQBmaiA_pXa0en5wnji3YkTXiu1nNRmPn597FzY1goywkcwMfJTShnjVRNMcSrLMuO1r4kn5sUp-jw",
+			"type": "string"
+		},
+		{
+			"key": "todoId",
+			"value": "ENTER VALUE",
+			"type": "string"
+		},
+		{
+			"key": "attachmentUrl",
+			"value": "ENTER VALUE",
+			"type": "string"
+		},
+		{
+			"key": "dueDate",
+			"value": "ENTER VALUE",
+			"type": "string"
+		},
+		{
+			"key": "todoMediumId",
+			"value": "ENTER VALUE",
+			"type": "string"
+		},
+		{
+			"key": "todoHighId",
+			"value": "ENTER VALUE",
+			"type": "string"
+		}
+	]
+}
